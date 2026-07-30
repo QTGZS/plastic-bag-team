@@ -19,6 +19,11 @@ public final class AuthScreen {
 
     /** Block until the user is verified (true) or the game must crash (false). */
     public static boolean showAndWait() {
+        // 如果有有效的缓存会话，跳过验证窗口，显示欢迎
+        if (AuthSession.hasValidSession()) {
+            showWelcome(AuthSession.getUsername());
+            return true;
+        }
         if (launched) return true;
         launched = true;
         final CountDownLatch latch = new CountDownLatch(1);
@@ -119,6 +124,11 @@ public final class AuthScreen {
             new Thread(() -> {
                 AuthClient.Result r = AuthClient.verify(u, p);
                 if (r.success) {
+                    // 保存登录会话（7天 token 有效期 ∩ 授权过期时间，取更早）
+                    long sevenDays = System.currentTimeMillis() + 7L * 86400000L;
+                    long sessionExpire = (r.expireAt > 0 && r.expireAt < sevenDays)
+                            ? r.expireAt : sevenDays;
+                    AuthSession.saveSession(r.token, u, sessionExpire);
                     SwingUtilities.invokeLater(() -> {
                         frame.dispose();
                         ok.set(true);
@@ -167,6 +177,20 @@ public final class AuthScreen {
         } catch (Exception ignored) {}
     }
 
+    /** Show the welcome info box (cached session is valid). */
+    private static void showWelcome(String username) {
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                String msg = Lang.t("welcome");
+                if (username != null && !username.isEmpty()) {
+                    msg += "\n" + Lang.t("welcome_as") + ": " + username;
+                }
+                JOptionPane.showMessageDialog(null, msg,
+                        "AlienV4 Client", JOptionPane.INFORMATION_MESSAGE);
+            });
+        } catch (Exception ignored) {}
+    }
+
     /** Fallback when AWT is headless (no display server). */
     public static boolean consoleFallback() {
         java.io.Console console = System.console();
@@ -180,6 +204,9 @@ public final class AuthScreen {
         String p = new String(console.readPassword(Lang.t("pass") + ": "));
         AuthClient.Result r = AuthClient.verify(u, p);
         if (r.success) {
+            long sevenDays = System.currentTimeMillis() + 7L * 86400000L;
+            long sessionExpire = (r.expireAt > 0 && r.expireAt < sevenDays) ? r.expireAt : sevenDays;
+            AuthSession.saveSession(r.token, u, sessionExpire);
             System.out.println("✓ " + r.message);
             return true;
         } else {

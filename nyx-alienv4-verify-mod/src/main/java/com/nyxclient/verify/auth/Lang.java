@@ -17,6 +17,8 @@ public final class Lang {
         Map<String, String> en = new HashMap<>();
         en.put("title", "AlienV4 Authentication");
         en.put("subtitle", "Please verify your AlienV4 license to continue.");
+        en.put("welcome", "Welcome to AlienV4!");
+        en.put("welcome_as", "Logged in as");
         en.put("user", "Username");
         en.put("pass", "Password");
         en.put("login", "Login");
@@ -32,6 +34,8 @@ public final class Lang {
         Map<String, String> zh = new HashMap<>();
         zh.put("title", "AlienV4 验证");
         zh.put("subtitle", "请验证您的 AlienV4 授权以继续。");
+        zh.put("welcome", "欢迎使用AlienV4！");
+        zh.put("welcome_as", "登录账号");
         zh.put("user", "用户名");
         zh.put("pass", "密码");
         zh.put("login", "登录");
@@ -47,6 +51,8 @@ public final class Lang {
         Map<String, String> ja = new HashMap<>();
         ja.put("title", "AlienV4 認証");
         ja.put("subtitle", "続行するには AlienV4 ライセンスを認証してください。");
+        ja.put("welcome", "AlienV4へようこそ！");
+        ja.put("welcome_as", "ログイン中");
         ja.put("user", "ユーザー名");
         ja.put("pass", "パスワード");
         ja.put("login", "ログイン");
@@ -62,6 +68,8 @@ public final class Lang {
         Map<String, String> ru = new HashMap<>();
         ru.put("title", "AlienV4 Авторизация");
         ru.put("subtitle", "Подтвердите лицензию AlienV4 для продолжения.");
+        ru.put("welcome", "Добро пожаловать в AlienV4!");
+        ru.put("welcome_as", "Вы вошли как");
         ru.put("user", "Имя пользователя");
         ru.put("pass", "Пароль");
         ru.put("login", "Войти");

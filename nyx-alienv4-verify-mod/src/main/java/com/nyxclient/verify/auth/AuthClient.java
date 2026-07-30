@@ -17,6 +17,7 @@ public final class AuthClient {
         public String message = "";
         public String token = "";
         public boolean needsBind;
+        public long expireAt;
     }
 
     /** One raw HTTP attempt. */
@@ -98,6 +99,13 @@ public final class AuthClient {
         r.message = strField(resp, "message");
         r.token = strField(resp, "token");
         r.needsBind = boolField(resp, "needsBind");
+        r.expireAt = longField(resp, "expireAt");
+    }
+
+    private static long longField(String json, String key) {
+        String v = field(json, key);
+        if (v == null || v.isEmpty()) return 0L;
+        try { return Long.parseLong(v); } catch (NumberFormatException e) { return 0L; }
     }
 
     private static boolean boolField(String json, String key) {
