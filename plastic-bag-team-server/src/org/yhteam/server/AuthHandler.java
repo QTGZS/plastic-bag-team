@@ -24,7 +24,7 @@ public class AuthHandler implements com.sun.net.httpserver.HttpHandler {
         String password = Json.getString(req, "password");
         String machineCode = Json.getString(req, "machineCode");
         String clientType = Json.getString(req, "clientType");
-        if (clientType == null || clientType.isEmpty()) clientType = "alienv4";
+        if (clientType == null || clientType.isEmpty()) clientType = "AlienV4";
 
         Map<String, Object> resp = new LinkedHashMap<>();
         if (username == null || password == null || machineCode == null) {
@@ -51,7 +51,7 @@ public class AuthHandler implements com.sun.net.httpserver.HttpHandler {
             Resp.json(ex, 403, resp);
             return;
         }
-        if (!clientType.equals(acc.get("clientType"))) {
+        if (!clientType.equalsIgnoreCase(String.valueOf(acc.get("clientType")))) {
             resp.put("success", false);
             resp.put("code", "NOT_PURCHASED");
             resp.put("message", "This account does not own client: " + clientType);

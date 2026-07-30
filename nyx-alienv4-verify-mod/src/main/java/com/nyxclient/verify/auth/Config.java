@@ -19,7 +19,7 @@ public final class Config {
     static {
         props.setProperty("api.base.url", DEFAULT_API_BASE);
         props.setProperty("api.verify.path", "/api/v1/auth/verify");
-        props.setProperty("client.type", "alienv4");
+        props.setProperty("client.type", "AlienV4");
         props.setProperty("lang", "en_us");
         props.setProperty("debug", "false");
         load();
@@ -59,7 +59,7 @@ public final class Config {
     }
 
     public static String clientType() {
-        return get("client.type", "alienv4");
+        return get("client.type", "AlienV4");
     }
 
     public static String lang() {

@@ -41,7 +41,7 @@ public final class Database {
             }
         } else {
             // create default admin account for testing
-            addAccountInternal("admin", "admin123", "alienv4", 365);
+            addAccountInternal("admin", "admin123", "AlienV4", 365);
             save();
             System.out.println("✓ Default account created (admin/admin123, 365 days)");
         }
@@ -91,7 +91,7 @@ public final class Database {
         Map<String, Object> acc = new LinkedHashMap<>();
         acc.put("username", username);
         acc.put("passwordHash", Util.sha256(password));
-        acc.put("clientType", clientType != null ? clientType : "alienv4");
+        acc.put("clientType", clientType != null ? clientType : "AlienV4");
         acc.put("machineCode", "");
         acc.put("createdAt", Util.now());
         acc.put("expireAt", Util.now() + durationDays * 86400000L);
