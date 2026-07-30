@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塑料袋子Team - 管理后台</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">🛡️ 塑料袋子Team <span class="ver">v1.0</span></div>
+  <div id="admin-info" class="admin-info hidden"></div>
+</header>
+
+<!-- 登录 -->
+<section id="login-view" class="view card">
+  <h2>管理员登录</h2>
+  <p class="muted">请输入管理员密码以进入后台</p>
+  <input id="admin-password" type="password" placeholder="管理员密码" autocomplete="off">
+  <button id="login-btn">登录</button>
+  <div id="login-msg" class="msg"></div>
+</section>
+
+<!-- 仪表盘 -->
+<section id="dash-view" class="view hidden">
+  <div class="toolbar">
+    <h2>账号管理</h2>
+    <button id="logout-btn" class="ghost">退出登录</button>
+  </div>
+
+  <div class="card add-box">
+    <h3>添加 / 授权账号</h3>
+    <div class="grid">
+      <input id="add-username" placeholder="用户名">
+      <input id="add-password" type="text" placeholder="密码">
+      <select id="add-client">
+        <option value="alienv4">AlienV4</option>
+        <option value="alienv4_pro">AlienV4 Pro</option>
+      </select>
+      <input id="add-days" type="number" value="30" min="1" placeholder="授权天数">
+    </div>
+    <button id="add-btn">添加账号</button>
+    <div id="add-msg" class="msg"></div>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <h3>账号列表</h3>
+      <button id="refresh-btn" class="ghost">刷新</button>
+    </div>
+    <table id="accounts-table">
+      <thead>
+        <tr>
+          <th>用户名</th><th>客户端</th><th>机器码</th>
+          <th>到期时间</th><th>状态</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="foot">塑料袋子Team · API 域名 yh-team.org · 后端端口 14639</footer>
+<script src="/app.js"></script>
+</body>
+</html>

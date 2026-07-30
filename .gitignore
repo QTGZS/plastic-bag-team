@@ -1,0 +1,16 @@
+# 构建产物
+nyx-alienv4-verify-mod/build/
+nyx-alienv4-verify-mod/.gradle/
+nyx-alienv4-verify-mod/out/
+plastic-bag-team-server/out/
+
+# 运行时数据（含测试账号，勿提交）
+plastic-bag-team-server/yhteam_data.json
+plastic-bag-team-server/server.log
+
+# 本地配置
+nyx-auth.properties
+
+# 系统
+.DS_Store
+*.class

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "nyx-alienv4-verify",
+  "version": "1.0.0",
+  "name": "Nyx AlienV4 Verify",
+  "description": "AlienV4 (modified) license verification. Shows an auth window before the game window and binds the machine code.",
+  "authors": ["塑料袋子Team"],
+  "contact": {
+    "homepage": "https://yh-team.org",
+    "sources": "https://github.com/plastic-bag-team/nyx-alienv4-verify"
+  },
+  "license": "custom",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.nyxclient.verify.NyxAuthMod"]
+  },
+  "mixins": ["nyx-auth.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.1"
+  }
+}

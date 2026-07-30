@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.nyxclient.verify.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MainMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

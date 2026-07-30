@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>塑料袋子Team · API 文档</title>
+<style>
+  :root{--bg:#0f1115;--panel:#1a1d24;--accent:#4f8cff;--text:#e6e9ef;--muted:#8b93a7;--border:#2b303c;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.7;}
+  .wrap{max-width:900px;margin:0 auto;padding:40px 20px;}
+  h1{font-size:28px;} h2{margin-top:40px;border-left:4px solid var(--accent);padding-left:10px;}
+  code{background:var(--panel);padding:2px 6px;border-radius:4px;font-size:13px;}
+  pre{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:16px;overflow:auto;font-size:13px;}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;}
+  th,td{border:1px solid var(--border);padding:8px 10px;text-align:left;}
+  th{background:var(--panel);color:var(--muted);}
+  .muted{color:var(--muted);}
+  a{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛡️ 塑料袋子Team · API 接口文档</h1>
+  <p class="muted">AlienV4 验证系统 · 域名 yh-team.org · 端口 14639 · 简体中文</p>
+
+  <h2>一、概览</h2>
+  <p>为 AlienV4 客户端提供账号授权与机器码绑定验证。包含游戏端验证接口、管理后台接口、管理网站与本文档。</p>
+  <table>
+    <tr><th>环境</th><th>Base URL</th></tr>
+    <tr><td>生产</td><td><code>https://yh-team.org</code></td></tr>
+    <tr><td>本地</td><td><code>http://localhost:14639</code></td></tr>
+  </table>
+  <p>统一返回结构：<code>{ "success":bool, "code":str, "message":str, ... }</code></p>
+
+  <h2>二、游戏端验证</h2>
+  <p><code>POST /api/v1/auth/verify</code></p>
+  <pre>// 请求
+{
+  "username": "玩家用户名",
+  "password": "账号密码",
+  "machineCode": "本机机器码(SHA-256)",
+  "clientType": "alienv4"
+}</pre>
+  <pre>// 响应（通过）
+{
+  "success": true, "code": "OK",
+  "token": "会话令牌", "expireAt": 1735689600000,
+  "bound": true, "needsBind": false
+}</pre>
+  <p>逻辑：账号不存在→<code>NOT_PURCHASED</code>；密码错→<code>INVALID_CREDENTIALS</code>；clientType 不符→<code>NOT_PURCHASED</code>；过期→<code>EXPIRED</code>；机器码空→自动绑定；不一致→<code>MACHINE_MISMATCH</code>。游戏端验证不通过一律崩溃退出。</p>
+
+  <h2>三、账号信息</h2>
+  <p><code>GET /api/v1/account/info?token=会话令牌</code></p>
+
+  <h2>四、管理员接口</h2>
+  <p>非登录接口需请求头 <code>X-Admin-Token: &lt;token&gt;</code></p>
+  <table>
+    <tr><th>方法</th><th>路径</th><th>说明</th></tr>
+    <tr><td>POST</td><td>/api/v1/admin/login</td><td>登录（密码 <code>admin123999</code>）</td></tr>
+    <tr><td>GET</td><td>/api/v1/admin/accounts</td><td>账号列表</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/account</td><td>添加/授权账号</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/account/renew</td><td>续期</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/account/delete</td><td>删除账号</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/account/resetmachine</td><td>解绑机器码</td></tr>
+  </table>
+
+  <h2>五、curl 示例</h2>
+  <pre># 登录
+curl -s -X POST http://localhost:14639/api/v1/admin/login \
+  -H 'Content-Type: application/json' -d '{"password":"admin123999"}'
+
+# 添加账号
+curl -s -X POST http://localhost:14639/api/v1/admin/account \
+  -H "X-Admin-Token: $ADMIN" -H 'Content-Type: application/json' \
+  -d '{"username":"test","password":"test123","clientType":"alienv4","durationDays":30}'
+
+# 游戏端验证
+curl -s -X POST http://localhost:14639/api/v1/auth/verify \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"test","password":"test123","machineCode":"ABC123","clientType":"alienv4"}'</pre>
+
+  <h2>六、管理后台</h2>
+  <p>浏览器打开 <a href="/">http://&lt;host&gt;:14639/</a> 即可使用中文后台（登录密码 admin123999）。</p>
+
+  <p class="muted">© 塑料袋子Team</p>
+</div>
+</body>
+</html>
