@@ -40,11 +40,25 @@ public final class Database {
                 save();
             }
         } else {
-            // create default admin account for testing
+            // 首次启动：随机生成管理员密码，仅打印一次
+            String adminPw = generatePassword(12);
+            data.put("adminPasswordHash", Util.sha256(adminPw));
             addAccountInternal("admin", "admin123", "AlienV4", 365);
             save();
-            System.out.println("✓ Default account created (admin/admin123, 365 days)");
+            System.out.println("========================================");
+            System.out.println("  初始管理员密码(随机生成，请妥善保存): " + adminPw);
+            System.out.println("  默认测试账号: admin / admin123 (365天)");
+            System.out.println("========================================");
         }
+    }
+
+    /** Generate a random admin password (no ambiguous chars). */
+    private static String generatePassword(int len) {
+        final String chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+        java.security.SecureRandom r = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) sb.append(chars.charAt(r.nextInt(chars.length())));
+        return sb.toString();
     }
 
     public static synchronized void save() {

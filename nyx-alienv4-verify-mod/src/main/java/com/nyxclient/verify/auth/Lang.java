@@ -25,6 +25,7 @@ public final class Lang {
         en.put("neterr", "Network error. Please check your connection and retry.");
         en.put("fail", "Verification failed: ");
         en.put("crash", "Verification failed. The game will now exit.");
+        en.put("wrongpw", "Wrong username or password. Please try again.");
         en.put("showpass", "Show password");
         TABLE.put("en_us", en);
 
@@ -39,6 +40,7 @@ public final class Lang {
         zh.put("neterr", "网络错误，请检查连接后重试。");
         zh.put("fail", "验证失败：");
         zh.put("crash", "验证未通过，游戏即将退出。");
+        zh.put("wrongpw", "用户名或密码错误，请重试。");
         zh.put("showpass", "显示密码");
         TABLE.put("zh_cn", zh);
 
@@ -53,6 +55,7 @@ public final class Lang {
         ja.put("neterr", "ネットワークエラー。接続を確認してください。");
         ja.put("fail", "認証失敗：");
         ja.put("crash", "認証に失敗しました。ゲームを終了します。");
+        ja.put("wrongpw", "ユーザー名またはパスワードが違います。再度お試しください。");
         ja.put("showpass", "パスワードを表示");
         TABLE.put("ja_jp", ja);
 
@@ -67,6 +70,7 @@ public final class Lang {
         ru.put("neterr", "Ошибка сети. Проверьте подключение.");
         ru.put("fail", "Ошибка проверки: ");
         ru.put("crash", "Проверка не пройдена. Игра будет закрыта.");
+        ru.put("wrongpw", "Неверное имя пользователя или пароль. Попробуйте снова.");
         ru.put("showpass", "Показать пароль");
         TABLE.put("ru_ru", ru);
     }

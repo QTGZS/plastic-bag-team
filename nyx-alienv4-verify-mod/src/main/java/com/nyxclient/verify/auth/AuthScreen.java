@@ -135,18 +135,26 @@ public final class AuthScreen {
                         ok.set(true);
                         latch.countDown();
                     });
-                } else {
+                } else if ("NETWORK_ERROR".equals(r.code)) {
+                    // 网络问题：提示并允许重试
                     SwingUtilities.invokeLater(() -> {
                         loginBtn.setEnabled(true);
-                        if ("NETWORK_ERROR".equals(r.code)) {
-                            status.setText(Lang.t("neterr"));
-                        } else {
-                            // definitive failure -> crash the game
-                            status.setText(Lang.t("fail") + r.message);
-                            frame.dispose();
-                            ok.set(false);
-                            latch.countDown();
-                        }
+                        status.setText(Lang.t("neterr"));
+                    });
+                } else if ("INVALID_CREDENTIALS".equals(r.code)) {
+                    // 密码错误：弹错误框通知，允许重试（不崩溃）
+                    showError(Lang.t("wrongpw"));
+                    SwingUtilities.invokeLater(() -> {
+                        loginBtn.setEnabled(true);
+                        status.setText(Lang.t("wrongpw"));
+                    });
+                } else {
+                    // 其它明确失败（未购买/机器码不符/过期/禁用）：弹框后崩溃
+                    showError(Lang.t("fail") + r.message);
+                    SwingUtilities.invokeLater(() -> {
+                        frame.dispose();
+                        ok.set(false);
+                        latch.countDown();
                     });
                 }
             }).start();
@@ -179,6 +187,15 @@ public final class AuthScreen {
                 JOptionPane.showMessageDialog(null, sp,
                         "Debug · API Response", JOptionPane.INFORMATION_MESSAGE);
             });
+        } catch (Exception ignored) {}
+    }
+
+    /** Show an error dialog (modal). Called from the worker thread. */
+    private static void showError(String text) {
+        try {
+            SwingUtilities.invokeAndWait(() ->
+                    JOptionPane.showMessageDialog(null, text,
+                            "AlienV4 Client", JOptionPane.ERROR_MESSAGE));
         } catch (Exception ignored) {}
     }
 
