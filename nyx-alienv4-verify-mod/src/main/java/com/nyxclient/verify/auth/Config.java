@@ -21,6 +21,7 @@ public final class Config {
         props.setProperty("api.verify.path", "/api/v1/auth/verify");
         props.setProperty("client.type", "alienv4");
         props.setProperty("lang", "en_us");
+        props.setProperty("debug", "false");
         load();
     }
 
@@ -67,5 +68,13 @@ public final class Config {
 
     public static void setLang(String lang) {
         set("lang", lang);
+    }
+
+    public static boolean debug() {
+        return "true".equalsIgnoreCase(get("debug", "false"));
+    }
+
+    public static void setDebug(boolean on) {
+        set("debug", on ? "true" : "false");
     }
 }
