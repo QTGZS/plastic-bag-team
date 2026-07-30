@@ -63,7 +63,8 @@ public final class Database {
 
     public static synchronized void save() {
         try {
-            FILE.getParentFile().mkdirs();
+            File parent = FILE.getParentFile();
+            if (parent != null) parent.mkdirs();
             Files.writeString(FILE.toPath(), Json.stringify(data), StandardCharsets.UTF_8);
         } catch (Exception e) {
             System.err.println("! DB save error: " + e.getMessage());
