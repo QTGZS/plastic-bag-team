@@ -88,13 +88,6 @@ public final class AuthScreen {
         showPass.addActionListener(e ->
                 passField.setEchoChar(showPass.isSelected() ? (char) 0 : '•'));
 
-        // debug mode toggle (persisted to nyx-auth.properties)
-        JCheckBox debugChk = new JCheckBox("Debug 调试模式");
-        debugChk.setSelected(Config.debug());
-        g.gridx = 1; g.gridy++;
-        panel.add(debugChk, g);
-        debugChk.addActionListener(e -> Config.setDebug(debugChk.isSelected()));
-
         JButton loginBtn = new JButton(Lang.t("login"));
         g.gridx = 0; g.gridy++; g.gridwidth = 2;
         g.fill = GridBagConstraints.NONE;
@@ -125,10 +118,6 @@ public final class AuthScreen {
             status.setText(Lang.t("logging"));
             new Thread(() -> {
                 AuthClient.Result r = AuthClient.verify(u, p);
-                // 调试模式：用信息框显示每次访问的 URL / 状态码 / 响应内容
-                if (Config.debug() && r.debugTrace != null && !r.debugTrace.isEmpty()) {
-                    showDebug(r.debugTrace);
-                }
                 if (r.success) {
                     SwingUtilities.invokeLater(() -> {
                         frame.dispose();
@@ -167,27 +156,6 @@ public final class AuthScreen {
         for (int i = 0; i < Lang.LANGS.length; i++)
             if (Lang.LANGS[i].equals(lang)) return i;
         return -1;
-    }
-
-    /** Show the raw API response(s) in a modal info box (debug mode). */
-    private static void showDebug(String text) {
-        try {
-            final String content = text.length() > 8000
-                    ? text.substring(0, 8000) + "\n... (truncated)"
-                    : text;
-            SwingUtilities.invokeAndWait(() -> {
-                JTextArea ta = new JTextArea(content);
-                ta.setEditable(false);
-                ta.setRows(24);
-                ta.setColumns(62);
-                ta.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-                ta.setLineWrap(true);
-                ta.setWrapStyleWord(true);
-                JScrollPane sp = new JScrollPane(ta);
-                JOptionPane.showMessageDialog(null, sp,
-                        "Debug · API Response", JOptionPane.INFORMATION_MESSAGE);
-            });
-        } catch (Exception ignored) {}
     }
 
     /** Show an error dialog (modal). Called from the worker thread. */

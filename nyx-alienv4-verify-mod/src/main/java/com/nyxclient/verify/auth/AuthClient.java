@@ -17,10 +17,9 @@ public final class AuthClient {
         public String message = "";
         public String token = "";
         public boolean needsBind;
-        public String debugTrace = "";   // 调试模式下的原始响应汇总
     }
 
-    /** One raw HTTP attempt (for debug tracing). */
+    /** One raw HTTP attempt. */
     private static final class Attempt {
         Result result = new Result();
         String url = "";
@@ -34,11 +33,10 @@ public final class AuthClient {
      * http and https) until one responds. As soon as a server answers — even
      * with an auth failure — we return that result. We only move to the next
      * candidate on a NETWORK_ERROR (unreachable / TLS failure).
-     * When debug mode is on, every attempt's URL/status/body is collected.
      */
     public static Result verify(String username, String password) {
         java.util.LinkedHashSet<String> candidates = new java.util.LinkedHashSet<>();
-        candidates.add(Config.apiBase());                       // 优先用配置/默认地址
+        candidates.add(Config.apiBase());
         candidates.add("https://play.simpfun.cn:14639");
         candidates.add("http://play.simpfun.cn:14639");
         candidates.add("https://yh-team.org");
@@ -46,25 +44,15 @@ public final class AuthClient {
         candidates.add("https://3c3u.org");
         candidates.add("http://3c3u.org");
 
-        boolean debug = Config.debug();
-        StringBuilder trace = new StringBuilder();
         Attempt last = new Attempt();
         for (String base : candidates) {
             Attempt a = tryAttempt(base, username, password);
-            if (debug) {
-                trace.append("▶ ").append(a.url).append("\n");
-                if (a.httpCode >= 0) trace.append("HTTP ").append(a.httpCode).append("\n");
-                if (!a.error.isEmpty()) trace.append("ERR: ").append(a.error).append("\n");
-                trace.append(a.body.isEmpty() ? "(empty body)" : a.body).append("\n\n");
-            }
             if (a.result.success || !"NETWORK_ERROR".equals(a.result.code)) {
-                a.result.debugTrace = trace.toString();
-                return a.result; // 已得到明确答复（通过 或 业务错误），停止尝试
+                return a.result;
             }
             last = a;
         }
-        last.result.debugTrace = trace.toString();
-        return last.result; // 所有候选都连不上 -> 返回最后一次结果
+        return last.result;
     }
 
     private static Attempt tryAttempt(String base, String username, String password) {
