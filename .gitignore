@@ -14,3 +14,4 @@ nyx-auth.properties
 # 系统
 .DS_Store
 *.class
+libs/
