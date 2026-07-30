@@ -39,6 +39,7 @@ document.getElementById("login-btn").onclick = async () => {
 function enterDash() {
   hide("login-view"); show("dash-view");
   document.getElementById("admin-info").textContent = "已登录";
+  loadProducts();
   loadAccounts();
 }
 
@@ -47,6 +48,70 @@ document.getElementById("logout-btn").onclick = () => {
   localStorage.removeItem("yhteam_admin_token");
   hide("dash-view"); show("login-view");
   document.getElementById("admin-info").textContent = "";
+};
+
+// ── 产品管理 ──
+
+async function loadProducts() {
+  const r = await api("/api/v1/admin/products");
+  const sel = document.getElementById("add-client");
+  sel.innerHTML = "";
+  if (r.data.success && r.data.products.length > 0) {
+    r.data.products.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.name ? `${p.name} (${p.id})` : p.id;
+      sel.appendChild(opt);
+    });
+  } else {
+    const opt = document.createElement("option");
+    opt.value = "alienv4";
+    opt.textContent = "AlienV4";
+    sel.appendChild(opt);
+  }
+  renderProducts(r.data.products || []);
+}
+
+function renderProducts(list) {
+  const tbody = document.querySelector("#products-table tbody");
+  tbody.innerHTML = "";
+  list.forEach(p => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.name || ""}</td>
+      <td>${p.description || ""}</td>
+      <td class="row-actions"><button onclick="delProd('${p.id}')">删除</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById("add-prod-btn").onclick = async () => {
+  const id = document.getElementById("prod-id").value.trim();
+  const name = document.getElementById("prod-name").value.trim();
+  const desc = document.getElementById("prod-desc").value.trim();
+  if (!id) { msg("prod-msg", "产品ID不能为空", false); return; }
+  const r = await api("/api/v1/admin/product", {
+    method: "POST",
+    body: JSON.stringify({ id, name, description: desc })
+  });
+  if (r.data.success) {
+    msg("prod-msg", "✅ " + r.data.message, true);
+    document.getElementById("prod-id").value = "";
+    document.getElementById("prod-name").value = "";
+    document.getElementById("prod-desc").value = "";
+    loadProducts();
+  } else {
+    msg("prod-msg", "❌ " + (r.data.message || "添加失败"), false);
+  }
+};
+
+window.delProd = async (id) => {
+  if (!confirm("确认删除产品 " + id + "？已授权该产品的账号将不受影响，但新账号无法再选它。")) return;
+  await api("/api/v1/admin/product/delete", {
+    method: "POST", body: JSON.stringify({ id })
+  });
+  loadProducts();
 };
 
 // ── 添加账号 ──
@@ -73,8 +138,8 @@ document.getElementById("add-btn").onclick = async () => {
   }
 };
 
-// ── 列表 ──
-document.getElementById("refresh-btn").onclick = loadAccounts;
+// ── 账号列表 ──
+document.getElementById("refresh-btn").onclick = () => { loadProducts(); loadAccounts(); };
 
 async function loadAccounts() {
   const r = await api("/api/v1/admin/accounts");
@@ -138,7 +203,6 @@ function fmtTime(ts) {
 
 // ── 启动 ──
 if (adminToken) {
-  // 验证 token 是否仍有效
   api("/api/v1/admin/accounts").then(r => {
     if (r.data.success) enterDash();
   });

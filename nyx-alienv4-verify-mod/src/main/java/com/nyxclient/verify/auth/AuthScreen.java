@@ -149,4 +149,25 @@ public final class AuthScreen {
             if (Lang.LANGS[i].equals(lang)) return i;
         return -1;
     }
+
+    /** Fallback when AWT is headless (no display server). */
+    public static boolean consoleFallback() {
+        java.io.Console console = System.console();
+        if (console == null) {
+            System.err.println("[Nyx AlienV4] No display and no console. Cannot authenticate.");
+            return false;
+        }
+        System.out.println("=== " + Lang.t("title") + " ===");
+        System.out.println(Lang.t("subtitle"));
+        String u = console.readLine(Lang.t("user") + ": ");
+        String p = new String(console.readPassword(Lang.t("pass") + ": "));
+        AuthClient.Result r = AuthClient.verify(u, p);
+        if (r.success) {
+            System.out.println("✓ " + r.message);
+            return true;
+        } else {
+            System.out.println("✗ " + Lang.t("fail") + (r.message != null ? r.message : r.code));
+            return false;
+        }
+    }
 }

@@ -1,15 +1,15 @@
 # 塑料袋子Team · AlienV4 验证系统
 
-> 站点名：**塑料袋子Team**
-> API 域名：**yh-team.org** · 后端端口：**14639**
+> 站点名：**塑料袋子Team**  
+> API 域名：**yh-team.org** · 后端端口：**14639**  
 > 客户端：AlienV4（魔改版）· Minecraft 1.21.1 Fabric
 
 本仓库包含两部分，最终产出 **两个 jar**：
 
-| 模块 | 目录 | 产物 | 说明 |
-|------|------|------|------|
-| 验证 Mod | `nyx-alienv4-verify-mod/` | `nyx-alienv4-verify-1.0.0.jar` | Fabric 客户端 mod，游戏窗口出现前弹出验证界面 |
-| 验证后端 | `plastic-bag-team-server/` | `plastic-bag-team-server.jar` | 可独立运行的 Java Web 后端（含管理员后台网站） |
+| 模块     | 目录                         | 产物                             | 说明                           |
+| ------ | -------------------------- | ------------------------------ | ---------------------------- |
+| 验证 Mod | `nyx-alienv4-verify-mod/`  | `nyx-alienv4-verify-1.0.0.jar` | Fabric 客户端 mod，游戏窗口出现前弹出验证界面 |
+| 验证后端   | `plastic-bag-team-server/` | `plastic-bag-team-server.jar`  | 可独立运行的 Java Web 后端（含管理员后台网站） |
 
 ---
 
@@ -53,7 +53,7 @@ cd nyx-alienv4-verify-mod
 # 产物: build/libs/nyx-alienv4-verify-1.0.0.jar
 ```
 
-把 jar 放进 `.minecraft/versions/<版本>/mods/` 即可。
+把 jar 放进 `.minecraft/versions/<版本>/mods/` 即可。  
 Mod 配置文件 `nyx-auth.properties`（游戏目录下）可改 API 地址：
 
 ```properties
@@ -61,6 +61,8 @@ api.base.url=https://yh-team.org
 client.type=alienv4
 lang=en_us
 ```
+
+
 
 ---
 

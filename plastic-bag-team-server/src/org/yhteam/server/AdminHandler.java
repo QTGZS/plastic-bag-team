@@ -14,6 +14,9 @@ import java.util.Map;
  *   POST /api/v1/admin/account/renew        { "username","durationDays" }
  *   POST /api/v1/admin/account/delete       { "username" }
  *   POST /api/v1/admin/account/resetmachine { "username" }
+ *   GET  /api/v1/admin/products             (header X-Admin-Token)
+ *   POST /api/v1/admin/product              { "id","name","description" }
+ *   POST /api/v1/admin/product/delete       { "id" }
  */
 public class AdminHandler implements com.sun.net.httpserver.HttpHandler {
     public void handle(HttpExchange ex) throws IOException {
@@ -45,6 +48,9 @@ public class AdminHandler implements com.sun.net.httpserver.HttpHandler {
             case "/account/renew":      handleRenew(ex); break;
             case "/account/delete":     handleDelete(ex); break;
             case "/account/resetmachine": handleReset(ex); break;
+            case "/products":          handleProducts(ex); break;
+            case "/product":            handleAddProduct(ex); break;
+            case "/product/delete":     handleDeleteProduct(ex); break;
             default:
                 Map<String, Object> r = new LinkedHashMap<>();
                 r.put("success", false);
@@ -189,6 +195,75 @@ public class AdminHandler implements com.sun.net.httpserver.HttpHandler {
         r.put("success", true);
         r.put("message", "Machine binding reset for: " + username);
         Resp.json(ex, 200, r);
+    }
+
+    // ── Product management ──
+
+    @SuppressWarnings("unchecked")
+    private void handleProducts(HttpExchange ex) throws IOException {
+        Map<String, Object> r = new LinkedHashMap<>();
+        List<Map<String, Object>> out = new java.util.ArrayList<>();
+        for (Map<String, Object> p : Database.getProductList()) {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("id", p.get("id"));
+            m.put("name", p.get("name"));
+            m.put("description", p.get("description"));
+            m.put("createdAt", p.get("createdAt"));
+            out.add(m);
+        }
+        r.put("success", true);
+        r.put("count", out.size());
+        r.put("products", out);
+        Resp.json(ex, 200, r);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void handleAddProduct(HttpExchange ex) throws IOException {
+        Map<String, Object> r = new LinkedHashMap<>();
+        if (!"POST".equalsIgnoreCase(ex.getRequestMethod())) {
+            Resp.error(ex, 405, "Method not allowed");
+            return;
+        }
+        Object req = Json.parse(Resp.body(ex));
+        String id = Json.getString(req, "id");
+        String name = Json.getString(req, "name");
+        String description = Json.getString(req, "description");
+        if (id == null || id.isEmpty()) {
+            r.put("success", false);
+            r.put("code", "BAD_REQUEST");
+            r.put("message", "product id required");
+            Resp.json(ex, 400, r);
+            return;
+        }
+        if (Database.findProduct(id) != null) {
+            r.put("success", false);
+            r.put("code", "EXISTS");
+            r.put("message", "Product already exists");
+            Resp.json(ex, 409, r);
+            return;
+        }
+        Database.addProduct(id, name, description);
+        r.put("success", true);
+        r.put("message", "Product created: " + id);
+        Resp.json(ex, 200, r);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void handleDeleteProduct(HttpExchange ex) throws IOException {
+        Map<String, Object> r = new LinkedHashMap<>();
+        Object req = Json.parse(Resp.body(ex));
+        String id = Json.getString(req, "id");
+        if (id == null || id.isEmpty()) {
+            r.put("success", false);
+            r.put("code", "BAD_REQUEST");
+            r.put("message", "product id required");
+            Resp.json(ex, 400, r);
+            return;
+        }
+        boolean removed = Database.removeProduct(id);
+        r.put("success", removed);
+        r.put("message", removed ? "Product deleted: " + id : "Product not found");
+        Resp.json(ex, removed ? 200 : 404, r);
     }
 
     private static String mask(String s) {
