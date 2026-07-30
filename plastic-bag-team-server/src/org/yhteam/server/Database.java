@@ -19,7 +19,6 @@ public final class Database {
 
     static {
         data.put("accounts", new ArrayList<Map<String, Object>>());
-        data.put("products", new ArrayList<Map<String, Object>>());
         data.put("adminPasswordHash", Util.sha256("admin123999"));
     }
 
@@ -34,34 +33,17 @@ public final class Database {
                         data.put("accounts", m.get("accounts"));
                     if (m.containsKey("adminPasswordHash"))
                         data.put("adminPasswordHash", m.get("adminPasswordHash"));
-                    if (m.containsKey("products"))
-                        data.put("products", m.get("products"));
-                    else
-                        ensureDefaultProduct();
                 }
-                System.out.println("✓ DB loaded (" + getAccountList().size() + " accounts, " + getProductList().size() + " products)");
+                System.out.println("✓ DB loaded (" + getAccountList().size() + " accounts)");
             } catch (Exception e) {
                 System.err.println("! DB load error: " + e.getMessage());
                 save();
             }
         } else {
-            ensureDefaultProduct();
             // create default admin account for testing
             addAccountInternal("admin", "admin123", "alienv4", 365);
             save();
             System.out.println("✓ Default account created (admin/admin123, 365 days)");
-        }
-    }
-
-    private static void ensureDefaultProduct() {
-        List<Map<String, Object>> products = getProductList();
-        if (products.isEmpty()) {
-            Map<String, Object> p = new LinkedHashMap<>();
-            p.put("id", "alienv4");
-            p.put("name", "AlienV4");
-            p.put("description", "AlienV4 modified client");
-            p.put("createdAt", Util.now());
-            products.add(p);
         }
     }
 
@@ -102,41 +84,7 @@ public final class Database {
         return null;
     }
 
-    // ── Product helpers ──
-
-    @SuppressWarnings("unchecked")
-    public static List<Map<String, Object>> getProductList() {
-        Object v = data.get("products");
-        if (v instanceof List) return (List<Map<String, Object>>) v;
-        List<Map<String, Object>> list = new ArrayList<>();
-        data.put("products", list);
-        return list;
-    }
-
-    public static Map<String, Object> findProduct(String id) {
-        for (Map<String, Object> p : getProductList()) {
-            if (id != null && id.equals(p.get("id"))) return p;
-        }
-        return null;
-    }
-
-    public static synchronized boolean addProduct(String id, String name, String description) {
-        if (id == null || id.isEmpty() || findProduct(id) != null) return false;
-        Map<String, Object> p = new LinkedHashMap<>();
-        p.put("id", id);
-        p.put("name", name != null ? name : id);
-        p.put("description", description != null ? description : "");
-        p.put("createdAt", Util.now());
-        getProductList().add(p);
-        save();
-        return true;
-    }
-
-    public static synchronized boolean removeProduct(String id) {
-        boolean removed = getProductList().removeIf(p -> id != null && id.equals(p.get("id")));
-        if (removed) save();
-        return removed;
-    }
+    // ── Account creation ──
 
     public static synchronized void addAccountInternal(
             String username, String password, String clientType, int durationDays) {

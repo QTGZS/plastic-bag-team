@@ -234,28 +234,6 @@ X-Admin-Token: <管理员会话令牌>
 
 清空该账号绑定的机器码与会话，玩家下次启动将重新绑定当前机器。
 
-### 9. 产品（客户端类型）管理
-
-一个“产品”对应一种客户端类型（`clientType`），例如 `alienv4`。管理员可动态添加新产品，添加账号时即可在下拉框选择。
-
-`GET /api/v1/admin/products` → 列出全部产品。
-
-```json
-{ "success": true, "count": 1, "products": [{ "id": "alienv4", "name": "AlienV4", "description": "...", "createdAt": 0 }] }
-```
-
-`POST /api/v1/admin/product` → 添加产品。
-
-```json
-{ "id": "myclient", "name": "MyClient", "description": "自定义客户端" }
-```
-
-`POST /api/v1/admin/product/delete` → 删除产品（已授权该产品的账号不受影响，但新账号无法再选它）。
-
-```json
-{ "id": "myclient" }
-```
-
 ---
 
 ## 五、使用流程示例（curl）

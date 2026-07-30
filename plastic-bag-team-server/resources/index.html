@@ -33,7 +33,7 @@
     <div class="grid">
       <input id="add-username" placeholder="用户名">
       <input id="add-password" type="text" placeholder="密码">
-      <select id="add-client"><!-- 动态从产品列表加载 --></select>
+      <input id="add-client" value="AlienV4" disabled>
       <input id="add-days" type="number" value="30" min="1" placeholder="授权天数">
     </div>
     <button id="add-btn">添加账号</button>
@@ -51,24 +51,6 @@
           <th>用户名</th><th>客户端</th><th>机器码</th>
           <th>到期时间</th><th>状态</th><th>操作</th>
         </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3>产品管理</h3>
-    <p class="muted">一个“产品”对应客户端类型（clientType），例如 alienv4。</p>
-    <div class="grid">
-      <input id="prod-id" placeholder="产品ID (clientType)">
-      <input id="prod-name" placeholder="产品名称">
-      <input id="prod-desc" placeholder="产品描述">
-    </div>
-    <button id="add-prod-btn">添加产品</button>
-    <div id="prod-msg" class="msg"></div>
-    <table id="products-table" style="margin-top:16px">
-      <thead>
-        <tr><th>ID</th><th>名称</th><th>描述</th><th>操作</th></tr>
       </thead>
       <tbody></tbody>
     </table>

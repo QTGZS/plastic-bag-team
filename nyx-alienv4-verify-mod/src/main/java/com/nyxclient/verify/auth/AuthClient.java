@@ -22,11 +22,14 @@ public final class AuthClient {
     public static Result verify(String username, String password) {
         String base = Config.apiBase();
         Result r = tryVerify(base, username, password);
-        // If the configured base is HTTPS but the connection failed (e.g. the
-        // server is plain HTTP behind a non-TLS endpoint), retry over HTTP.
-        if (!r.success && "NETWORK_ERROR".equals(r.code) && base.startsWith("https://")) {
-            String httpBase = "http://" + base.substring(8);
-            Result r2 = tryVerify(httpBase, username, password);
+        // If the first attempt failed due to a network/TLS error, retry with the
+        // opposite scheme (https <-> http) so it works whether or not the server
+        // is behind TLS. Only retries on NETWORK_ERROR, not on auth failures.
+        if (!r.success && "NETWORK_ERROR".equals(r.code)) {
+            String alt = base.startsWith("https://")
+                    ? "http://" + base.substring(8)
+                    : "https://" + base.substring(7);
+            Result r2 = tryVerify(alt, username, password);
             if (r2.success || !"NETWORK_ERROR".equals(r2.code)) {
                 return r2;
             }
