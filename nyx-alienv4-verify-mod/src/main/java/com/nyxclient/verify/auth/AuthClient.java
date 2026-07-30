@@ -19,22 +19,31 @@ public final class AuthClient {
         public boolean needsBind;
     }
 
+    /**
+     * Try every candidate endpoint (configured base + known domains, each with
+     * http and https) until one responds. As soon as a server answers — even
+     * with an auth failure — we return that result. We only move to the next
+     * candidate on a NETWORK_ERROR (unreachable / TLS failure).
+     */
     public static Result verify(String username, String password) {
-        String base = Config.apiBase();
-        Result r = tryVerify(base, username, password);
-        // If the first attempt failed due to a network/TLS error, retry with the
-        // opposite scheme (https <-> http) so it works whether or not the server
-        // is behind TLS. Only retries on NETWORK_ERROR, not on auth failures.
-        if (!r.success && "NETWORK_ERROR".equals(r.code)) {
-            String alt = base.startsWith("https://")
-                    ? "http://" + base.substring(8)
-                    : "https://" + base.substring(7);
-            Result r2 = tryVerify(alt, username, password);
-            if (r2.success || !"NETWORK_ERROR".equals(r2.code)) {
-                return r2;
+        java.util.LinkedHashSet<String> candidates = new java.util.LinkedHashSet<>();
+        candidates.add(Config.apiBase());                       // 优先用配置/默认地址
+        candidates.add("https://play.simpfun.cn:14639");
+        candidates.add("http://play.simpfun.cn:14639");
+        candidates.add("https://yh-team.org");
+        candidates.add("http://yh-team.org");
+        candidates.add("https://3c3u.org");
+        candidates.add("http://3c3u.org");
+
+        Result last = new Result();
+        for (String base : candidates) {
+            Result r = tryVerify(base, username, password);
+            if (r.success || !"NETWORK_ERROR".equals(r.code)) {
+                return r; // 已得到明确答复（通过 或 业务错误），停止尝试
             }
+            last = r;
         }
-        return r;
+        return last; // 所有候选都连不上 -> 返回最后一次的网络错误
     }
 
     private static Result tryVerify(String base, String username, String password) {
@@ -45,8 +54,8 @@ public final class AuthClient {
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setRequestMethod("POST");
             c.setDoOutput(true);
-            c.setConnectTimeout(10000);
-            c.setReadTimeout(10000);
+            c.setConnectTimeout(5000);
+            c.setReadTimeout(8000);
             c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             c.setRequestProperty("User-Agent", "NyxAlienV4Client/1.0");
 
