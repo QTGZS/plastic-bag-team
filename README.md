@@ -1,7 +1,7 @@
 # 塑料袋子Team · AlienV4 验证系统
 
 > 站点名：**塑料袋子Team**  
-> API 域名：**yh-team.org** · 后端端口：**14639**  
+> 客户端连接地址：**play.simpfun.cn:14639** · 后端端口：**14639**  
 > 客户端：AlienV4（魔改版）· Minecraft 1.21.1 Fabric
 
 本仓库包含两部分，最终产出 **两个 jar**：
@@ -16,7 +16,7 @@
 ## 一、工作流程
 
 1. 玩家启动游戏，Fabric Mod 在**游戏窗口创建之前**弹出验证窗口（默认英文，可切换 简体中文 / 日本語 / Русский）。
-2. 玩家输入用户名、密码，Mod 计算本机**机器码**并请求 `yh-team.org/api/v1/auth/verify`。
+2. 玩家输入用户名、密码，Mod 计算本机**机器码**并请求 `play.simpfun.cn:14639/api/v1/auth/verify`。
 3. 后端检查：是否购买 AlienV4、密码是否正确、是否过期、机器码是否匹配。
    - 机器码为空 → 自动绑定当前机器；
    - 机器码不一致 → 拒绝（`MACHINE_MISMATCH`）；
@@ -57,7 +57,7 @@ cd nyx-alienv4-verify-mod
 Mod 配置文件 `nyx-auth.properties`（游戏目录下）可改 API 地址：
 
 ```properties
-api.base.url=https://yh-team.org
+api.base.url=https://play.simpfun.cn:14639
 client.type=alienv4
 lang=en_us
 ```

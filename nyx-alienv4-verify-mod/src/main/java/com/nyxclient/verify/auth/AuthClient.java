@@ -20,9 +20,23 @@ public final class AuthClient {
     }
 
     public static Result verify(String username, String password) {
+        String base = Config.apiBase();
+        Result r = tryVerify(base, username, password);
+        // If the configured base is HTTPS but the connection failed (e.g. the
+        // server is plain HTTP behind a non-TLS endpoint), retry over HTTP.
+        if (!r.success && "NETWORK_ERROR".equals(r.code) && base.startsWith("https://")) {
+            String httpBase = "http://" + base.substring(8);
+            Result r2 = tryVerify(httpBase, username, password);
+            if (r2.success || !"NETWORK_ERROR".equals(r2.code)) {
+                return r2;
+            }
+        }
+        return r;
+    }
+
+    private static Result tryVerify(String base, String username, String password) {
         Result r = new Result();
         try {
-            String base = Config.apiBase();
             String path = Config.get("api.verify.path", "/api/v1/auth/verify");
             URL url = new URL(base + path);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();

@@ -14,7 +14,7 @@ public final class Config {
     private static final File FILE = new File("nyx-auth.properties");
     private static final Properties props = new Properties();
 
-    public static final String DEFAULT_API_BASE = "https://yh-team.org";
+    public static final String DEFAULT_API_BASE = "https://play.simpfun.cn:14639";
 
     static {
         props.setProperty("api.base.url", DEFAULT_API_BASE);
