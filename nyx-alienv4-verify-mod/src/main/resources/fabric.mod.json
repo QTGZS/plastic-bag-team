@@ -15,6 +15,7 @@
     "client": ["com.nyxclient.verify.NyxAuthMod"]
   },
   "mixins": ["nyx-auth.mixins.json"],
+  "jars": [{"file": "META-INF/jars/alien.jar"}],
   "depends": {
     "fabricloader": ">=0.15.0",
     "minecraft": "1.21.1"
