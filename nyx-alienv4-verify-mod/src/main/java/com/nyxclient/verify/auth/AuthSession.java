@@ -1,43 +1,32 @@
 package com.nyxclient.verify.auth;
 
 /**
- * Persistent login session. After the first successful verification,
- * the token and expiry are saved. On subsequent launches, if the
- * session is still valid, the auth window is skipped.
+ * Persistent login credentials. After the first successful login,
+ * username and password are saved locally. On subsequent launches
+ * the mod silently re-authenticates with the server — no token caching.
  */
 public final class AuthSession {
-    private static final String KEY_TOKEN   = "auth.token";
-    private static final String KEY_EXPIRE  = "auth.token.expire";
-    private static final String KEY_USER    = "auth.username";
+    private static final String KEY_USER = "auth.username";
+    private static final String KEY_PASS = "auth.password";
 
-    /** True if we have a saved token that hasn't expired yet. */
-    public static boolean hasValidSession() {
-        String token = Config.get(KEY_TOKEN, "");
-        if (token.isEmpty()) return false;
-        long expire = parseExpire(Config.get(KEY_EXPIRE, "0"));
-        return expire > System.currentTimeMillis();
+    /** True if we have saved credentials. */
+    public static boolean hasSavedCredentials() {
+        return !Config.get(KEY_USER, "").isEmpty()
+            && !Config.get(KEY_PASS, "").isEmpty();
     }
 
-    /** The saved username (for the welcome message). */
-    public static String getUsername() {
-        return Config.get(KEY_USER, "");
-    }
+    public static String getUsername() { return Config.get(KEY_USER, ""); }
+    public static String getPassword() { return Config.get(KEY_PASS, ""); }
 
-    /** Called right after a successful server-side verification. */
-    public static void saveSession(String token, String username, long expireAt) {
-        Config.set(KEY_TOKEN, token);
+    /** Called after a successful verification. Saves (username, password). */
+    public static void saveCredentials(String username, String password) {
         Config.set(KEY_USER, username);
-        Config.set(KEY_EXPIRE, String.valueOf(expireAt));
+        Config.set(KEY_PASS, password);
     }
 
-    /** Clear the saved session (e.g. after a failed re-auth). */
-    public static void clearSession() {
-        Config.set(KEY_TOKEN, "");
+    /** Clear saved credentials (verification failed on a later launch). */
+    public static void clearCredentials() {
         Config.set(KEY_USER, "");
-        Config.set(KEY_EXPIRE, "0");
-    }
-
-    private static long parseExpire(String v) {
-        try { return Long.parseLong(v); } catch (NumberFormatException e) { return 0L; }
+        Config.set(KEY_PASS, "");
     }
 }

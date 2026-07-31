@@ -19,10 +19,17 @@ public final class AuthScreen {
 
     /** Block until the user is verified (true) or the game must crash (false). */
     public static boolean showAndWait() {
-        // 如果有有效的缓存会话，跳过验证窗口，显示欢迎
-        if (AuthSession.hasValidSession()) {
-            showWelcome(AuthSession.getUsername());
-            return true;
+        // 有已保存的凭据？静默重新验证（用户名+密码+当前机器码）
+        if (AuthSession.hasSavedCredentials()) {
+            String u = AuthSession.getUsername();
+            String p = AuthSession.getPassword();
+            AuthClient.Result r = AuthClient.verify(u, p);
+            if (r.success) {
+                showWelcome(u);
+                return true;
+            }
+            // 验证失败（密码改/过期/机器换），清空凭据，弹出窗口让玩家重新登录
+            AuthSession.clearCredentials();
         }
         if (launched) return true;
         launched = true;
@@ -124,11 +131,8 @@ public final class AuthScreen {
             new Thread(() -> {
                 AuthClient.Result r = AuthClient.verify(u, p);
                 if (r.success) {
-                    // 保存登录会话（7天 token 有效期 ∩ 授权过期时间，取更早）
-                    long sevenDays = System.currentTimeMillis() + 7L * 86400000L;
-                    long sessionExpire = (r.expireAt > 0 && r.expireAt < sevenDays)
-                            ? r.expireAt : sevenDays;
-                    AuthSession.saveSession(r.token, u, sessionExpire);
+                    // 保存凭据，下次启动自动验证
+                    AuthSession.saveCredentials(u, p);
                     SwingUtilities.invokeLater(() -> {
                         frame.dispose();
                         ok.set(true);
@@ -204,9 +208,7 @@ public final class AuthScreen {
         String p = new String(console.readPassword(Lang.t("pass") + ": "));
         AuthClient.Result r = AuthClient.verify(u, p);
         if (r.success) {
-            long sevenDays = System.currentTimeMillis() + 7L * 86400000L;
-            long sessionExpire = (r.expireAt > 0 && r.expireAt < sevenDays) ? r.expireAt : sevenDays;
-            AuthSession.saveSession(r.token, u, sessionExpire);
+            AuthSession.saveCredentials(u, p);
             System.out.println("✓ " + r.message);
             return true;
         } else {
