@@ -24,7 +24,7 @@ public class AuthHandler implements com.sun.net.httpserver.HttpHandler {
         String password = Json.getString(req, "password");
         String machineCode = Json.getString(req, "machineCode");
         String clientType = Json.getString(req, "clientType");
-        if (clientType == null || clientType.isEmpty()) clientType = "AlienV4";
+        if (clientType == null || clientType.isEmpty()) clientType = "RusherHack";
 
         Map<String, Object> resp = new LinkedHashMap<>();
         if (username == null || password == null || machineCode == null) {
@@ -39,7 +39,7 @@ public class AuthHandler implements com.sun.net.httpserver.HttpHandler {
         if (acc == null) {
             resp.put("success", false);
             resp.put("code", "NOT_PURCHASED");
-            resp.put("message", "Account not found. AlienV4 client not purchased.");
+            resp.put("message", "Account not found. RusherHack client not purchased.");
             Resp.json(ex, 403, resp);
             return;
         }
@@ -70,7 +70,7 @@ public class AuthHandler implements com.sun.net.httpserver.HttpHandler {
         if (expireAt > 0 && Util.now() > expireAt) {
             resp.put("success", false);
             resp.put("code", "EXPIRED");
-            resp.put("message", "Your AlienV4 license has expired.");
+            resp.put("message", "Your RusherHack license has expired.");
             Resp.json(ex, 403, resp);
             return;
         }

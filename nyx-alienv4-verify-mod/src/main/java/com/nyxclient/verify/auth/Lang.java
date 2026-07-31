@@ -15,9 +15,9 @@ public final class Lang {
 
     static {
         Map<String, String> en = new HashMap<>();
-        en.put("title", "AlienV4 Authentication");
-        en.put("subtitle", "Please verify your AlienV4 license to continue.");
-        en.put("welcome", "Welcome to AlienV4!");
+        en.put("title", "RusherHack Authentication");
+        en.put("subtitle", "Please verify your RusherHack license to continue.");
+        en.put("welcome", "Welcome to RusherHack!");
         en.put("welcome_as", "Logged in as");
         en.put("user", "Username");
         en.put("pass", "Password");
@@ -32,9 +32,9 @@ public final class Lang {
         TABLE.put("en_us", en);
 
         Map<String, String> zh = new HashMap<>();
-        zh.put("title", "AlienV4 验证");
-        zh.put("subtitle", "请验证您的 AlienV4 授权以继续。");
-        zh.put("welcome", "欢迎使用AlienV4！");
+        zh.put("title", "RusherHack 验证");
+        zh.put("subtitle", "请验证您的 RusherHack 授权以继续。");
+        zh.put("welcome", "欢迎使用RusherHack！");
         zh.put("welcome_as", "登录账号");
         zh.put("user", "用户名");
         zh.put("pass", "密码");
@@ -49,9 +49,9 @@ public final class Lang {
         TABLE.put("zh_cn", zh);
 
         Map<String, String> ja = new HashMap<>();
-        ja.put("title", "AlienV4 認証");
-        ja.put("subtitle", "続行するには AlienV4 ライセンスを認証してください。");
-        ja.put("welcome", "AlienV4へようこそ！");
+        ja.put("title", "RusherHack 認証");
+        ja.put("subtitle", "続行するには RusherHack ライセンスを認証してください。");
+        ja.put("welcome", "RusherHackへようこそ！");
         ja.put("welcome_as", "ログイン中");
         ja.put("user", "ユーザー名");
         ja.put("pass", "パスワード");
@@ -66,9 +66,9 @@ public final class Lang {
         TABLE.put("ja_jp", ja);
 
         Map<String, String> ru = new HashMap<>();
-        ru.put("title", "AlienV4 Авторизация");
-        ru.put("subtitle", "Подтвердите лицензию AlienV4 для продолжения.");
-        ru.put("welcome", "Добро пожаловать в AlienV4!");
+        ru.put("title", "RusherHack Авторизация");
+        ru.put("subtitle", "Подтвердите лицензию RusherHack для продолжения.");
+        ru.put("welcome", "Добро пожаловать в RusherHack!");
         ru.put("welcome_as", "Вы вошли как");
         ru.put("user", "Имя пользователя");
         ru.put("pass", "Пароль");

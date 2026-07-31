@@ -1,14 +1,14 @@
-# 塑料袋子Team · AlienV4 验证系统
+# 塑料袋子Team · RusherHack 验证系统
 
 > 站点名：**塑料袋子Team**  
 > 客户端连接地址：**play.simpfun.cn:14639** · 后端端口：**14639**  
-> 客户端：AlienV4（魔改版）· Minecraft 1.21.1 Fabric
+> 客户端：RusherHack（魔改版）· Minecraft 1.21.1 Fabric
 
 本仓库包含两部分，最终产出 **两个 jar**：
 
 | 模块     | 目录                         | 产物                             | 说明                           |
 | ------ | -------------------------- | ------------------------------ | ---------------------------- |
-| 验证 Mod | `nyx-alienv4-verify-mod/`  | `nyx-alienv4-verify-1.0.0.jar` | Fabric 客户端 mod，游戏窗口出现前弹出验证界面 |
+| 验证 Mod | `nyx-rusherhack-verify-mod/`  | `nyx-rusherhack-verify-1.0.0.jar` | Fabric 客户端 mod，游戏窗口出现前弹出验证界面 |
 | 验证后端   | `plastic-bag-team-server/` | `plastic-bag-team-server.jar`  | 可独立运行的 Java Web 后端（含管理员后台网站） |
 
 ---
@@ -17,7 +17,7 @@
 
 1. 玩家启动游戏，Fabric Mod 在**游戏窗口创建之前**弹出验证窗口（默认英文，可切换 简体中文 / 日本語 / Русский）。
 2. 玩家输入用户名、密码，Mod 计算本机**机器码**并请求 `play.simpfun.cn:14639/api/v1/auth/verify`。
-3. 后端检查：是否购买 AlienV4、密码是否正确、是否过期、机器码是否匹配。
+3. 后端检查：是否购买 RusherHack、密码是否正确、是否过期、机器码是否匹配。
    - 机器码为空 → 自动绑定当前机器；
    - 机器码不一致 → 拒绝（`MACHINE_MISMATCH`）；
    - 任一验证不通过 → **游戏直接崩溃退出**。
@@ -47,10 +47,10 @@ java -jar plastic-bag-team-server.jar
 ## 三、Fabric Mod（1.21.1）
 
 ```bash
-cd nyx-alienv4-verify-mod
+cd nyx-rusherhack-verify-mod
 # 需要 JDK 21
 ./gradlew build        # 若系统非 JDK21，请用 JDK21 运行 gradle
-# 产物: build/libs/nyx-alienv4-verify-1.0.0.jar
+# 产物: build/libs/nyx-rusherhack-verify-1.0.0.jar
 ```
 
 把 jar 放进 `.minecraft/versions/<版本>/mods/` 即可。  
@@ -58,7 +58,7 @@ Mod 配置文件 `nyx-auth.properties`（游戏目录下）可改 API 地址：
 
 ```properties
 api.base.url=https://play.simpfun.cn:14639
-client.type=alienv4
+client.type=rusherhack
 lang=en_us
 ```
 
@@ -73,7 +73,7 @@ lang=en_us
 
 ```
 .
-├── nyx-alienv4-verify-mod/      # Fabric 1.21.1 验证 Mod
+├── nyx-rusherhack-verify-mod/      # Fabric 1.21.1 验证 Mod
 │   ├── src/main/java/com/nyxclient/verify/
 │   │   ├── auth/                # 验证窗口 / API客户端 / 机器码 / 多语言 / 配置
 │   │   └── mixin/MainMixin.java # 在游戏窗口前注入验证

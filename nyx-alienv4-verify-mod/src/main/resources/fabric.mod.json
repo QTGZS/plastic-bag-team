@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "id": "nyx-alienv4-verify",
+  "id": "nyx-rusherhack-verify",
   "version": "1.0.0",
-  "name": "Nyx AlienV4 Verify",
-  "description": "AlienV4Client激活程序 by 永恒混沌 该软件需付费。",
+  "name": "Nyx RusherHack Verify",
+  "description": "RusherHackClient激活程序 by 永恒混沌 该软件需付费。",
   "authors": ["塑料袋子Team"],
   "contact": {
     "homepage": "https://yh-team.org",
-    "sources": "https://github.com/plastic-bag-team/nyx-alienv4-verify"
+    "sources": "https://github.com/plastic-bag-team/plastic-bag-team"
   },
   "license": "custom",
   "environment": "client",

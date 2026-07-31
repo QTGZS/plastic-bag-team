@@ -55,11 +55,13 @@ button {
   transition: .15s;
 }
 button:hover { opacity: .9; }
+button.primary { background: linear-gradient(135deg, var(--accent), #6a5cff); }
 button.ghost {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
 }
+button.ghost:hover { color: var(--text); border-color: var(--muted); }
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -81,3 +83,23 @@ th { color: var(--muted); font-weight: 600; }
 .row-actions button { margin-right: 6px; padding: 6px 10px; font-size: 12px; }
 .foot { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
 .hidden { display: none !important; }
+
+/* 统计卡片 */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.stat-num { font-size: 26px; font-weight: 700; color: var(--accent); }
+.stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+/* 登录卡片 */
+.login-card { max-width: 380px; margin: 60px auto; text-align: center; }
+.login-card input { text-align: center; }
+
+/* 卡片标题带图标间距 */
+.card h3 { margin-top: 0; }
+@media (max-width: 720px) { .stats { grid-template-columns: repeat(2, 1fr); } }

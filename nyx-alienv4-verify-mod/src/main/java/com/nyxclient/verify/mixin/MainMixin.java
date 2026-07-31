@@ -34,7 +34,7 @@ public abstract class MainMixin {
 
         if (!verified) {
             throw new RuntimeException(
-                    "[Nyx AlienV4] Verification failed. Game crashed by design.");
+                    "[Nyx RusherHack] Verification failed. Game crashed by design.");
         }
     }
 }

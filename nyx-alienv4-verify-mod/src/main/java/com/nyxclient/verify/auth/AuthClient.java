@@ -68,7 +68,7 @@ public final class AuthClient {
             c.setConnectTimeout(5000);
             c.setReadTimeout(8000);
             c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            c.setRequestProperty("User-Agent", "NyxAlienV4Client/1.0");
+            c.setRequestProperty("User-Agent", "NyxRusherHackClient/1.0");
 
             String body = buildJson(username, password, MachineCode.get(), Config.clientType());
             try (OutputStream os = c.getOutputStream()) {

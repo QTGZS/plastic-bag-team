@@ -1,16 +1,16 @@
-# 塑料袋子Team · API 接口文档（AlienV4 验证系统）
+# 塑料袋子Team · API 接口文档（RusherHack 验证系统）
 
 > 站点名：**塑料袋子Team**
 > API 域名：**yh-team.org**
 > 后端服务端口：**14639**
-> 客户端类型：`alienv4`
+> 客户端类型：`rusherhack`
 > 文档语言：简体中文
 
 ---
 
 ## 一、概览
 
-本系统为 AlienV4（魔改客户端）提供账号授权与机器码绑定验证。包含：
+本系统为 RusherHack（魔改客户端）提供账号授权与机器码绑定验证。包含：
 
 - **游戏端验证接口**：Fabric Mod 在游戏窗口出现前调用，校验用户名/密码、购买状态、机器码绑定。
 - **管理后台接口**：管理员登录后增删账号、授权时长、解绑机器码。
@@ -64,7 +64,7 @@
   "username": "玩家用户名",
   "password": "账号密码",
   "machineCode": "本机机器码(SHA-256)",
-  "clientType": "alienv4"
+  "clientType": "rusherhack"
 }
 ```
 
@@ -104,7 +104,7 @@
 
 **逻辑：**
 
-1. 账号不存在 → `NOT_PURCHASED`（即未购买 AlienV4）。
+1. 账号不存在 → `NOT_PURCHASED`（即未购买 RusherHack）。
 2. 密码错误 → `INVALID_CREDENTIALS`。
 3. `clientType` 不匹配 → `NOT_PURCHASED`。
 4. 账号被禁用 → `DISABLED`。
@@ -129,7 +129,7 @@
 {
   "success": true,
   "username": "玩家",
-  "clientType": "alienv4",
+  "clientType": "rusherhack",
   "expireAt": 1735689600000,
   "bound": true,
   "active": true
@@ -175,7 +175,7 @@ X-Admin-Token: <管理员会话令牌>
   "accounts": [
     {
       "username": "alice",
-      "clientType": "alienv4",
+      "clientType": "rusherhack",
       "machineCode": "a1b2c3d4****",
       "createdAt": 1700000000000,
       "expireAt": 1735689600000,
@@ -194,7 +194,7 @@ X-Admin-Token: <管理员会话令牌>
 {
   "username": "bob",
   "password": "123456",
-  "clientType": "alienv4",
+  "clientType": "rusherhack",
   "durationDays": 30
 }
 ```
@@ -203,7 +203,7 @@ X-Admin-Token: <管理员会话令牌>
 |------|------|
 | username | 登录用户名（唯一） |
 | password | 登录密码 |
-| clientType | 授权客户端，默认 `alienv4` |
+| clientType | 授权客户端，默认 `rusherhack` |
 | durationDays | 授权天数（默认 30） |
 
 ### 6. 续期
@@ -234,6 +234,28 @@ X-Admin-Token: <管理员会话令牌>
 
 清空该账号绑定的机器码与会话，玩家下次启动将重新绑定当前机器。
 
+### 9. 客户端类型（产品）管理
+
+一个"客户端"对应一种 `clientType`（如 `RusherHack`）。管理员可动态添加客户端，添加账号时即可选择。
+
+`GET /api/v1/admin/products` → 列出全部客户端类型。
+
+```json
+{ "success": true, "count": 1, "products": [{ "id": "RusherHack", "name": "RusherHack", "description": "...", "createdAt": 0 }] }
+```
+
+`POST /api/v1/admin/product` → 添加客户端类型。
+
+```json
+{ "id": "AlienV4", "name": "AlienV4", "description": "其他客户端" }
+```
+
+`POST /api/v1/admin/product/delete` → 删除客户端类型（已授权该客户端的账号不受影响，但新账号无法再选它）。
+
+```json
+{ "id": "AlienV4" }
+```
+
 ---
 
 ## 五、使用流程示例（curl）
@@ -247,12 +269,12 @@ ADMIN=$(curl -s -X POST http://localhost:14639/api/v1/admin/login \
 # 2. 添加账号并授权 30 天
 curl -s -X POST http://localhost:14639/api/v1/admin/account \
   -H "X-Admin-Token: $ADMIN" -H 'Content-Type: application/json' \
-  -d '{"username":"test","password":"test123","clientType":"alienv4","durationDays":30}'
+  -d '{"username":"test","password":"test123","clientType":"rusherhack","durationDays":30}'
 
 # 3. 游戏端验证（模拟）
 curl -s -X POST http://localhost:14639/api/v1/auth/verify \
   -H 'Content-Type: application/json' \
-  -d '{"username":"test","password":"test123","machineCode":"ABC123","clientType":"alienv4"}'
+  -d '{"username":"test","password":"test123","machineCode":"ABC123","clientType":"rusherhack"}'
 ```
 
 ---

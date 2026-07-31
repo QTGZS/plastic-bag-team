@@ -8,11 +8,11 @@ import net.fabricmc.api.ClientModInitializer;
  * window). This initializer just logs that the mod is loaded.
  */
 public class NyxAuthMod implements ClientModInitializer {
-    public static final String MOD_ID = "nyx-alienv4-verify";
+    public static final String MOD_ID = "nyx-rusherhack-verify";
 
     @Override
     public void onInitializeClient() {
         // no-op: auth is enforced pre-window via MainMixin
-        System.out.println("[Nyx AlienV4 Verify] loaded. API base=" + Config.apiBase());
+        System.out.println("[Nyx RusherHack Verify] loaded. API base=" + Config.apiBase());
     }
 }

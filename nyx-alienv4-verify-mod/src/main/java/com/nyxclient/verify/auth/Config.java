@@ -19,7 +19,7 @@ public final class Config {
     static {
         props.setProperty("api.base.url", DEFAULT_API_BASE);
         props.setProperty("api.verify.path", "/api/v1/auth/verify");
-        props.setProperty("client.type", "AlienV4");
+        props.setProperty("client.type", "RusherHack");
         props.setProperty("lang", "en_us");
         load();
     }
@@ -36,7 +36,7 @@ public final class Config {
 
     public static void save() {
         try (FileWriter w = new FileWriter(FILE)) {
-            props.store(w, "Nyx AlienV4 Auth Config");
+            props.store(w, "Nyx RusherHack Auth Config");
         } catch (IOException ignored) {}
     }
 
@@ -58,7 +58,7 @@ public final class Config {
     }
 
     public static String clientType() {
-        return get("client.type", "AlienV4");
+        return get("client.type", "RusherHack");
     }
 
     public static String lang() {

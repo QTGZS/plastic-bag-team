@@ -22,10 +22,10 @@
 <body>
 <div class="wrap">
   <h1>🛡️ 塑料袋子Team · API 接口文档</h1>
-  <p class="muted">AlienV4 验证系统 · 域名 yh-team.org · 端口 14639 · 简体中文</p>
+  <p class="muted">RusherHack 验证系统 · 域名 yh-team.org · 端口 14639 · 简体中文</p>
 
   <h2>一、概览</h2>
-  <p>为 AlienV4 客户端提供账号授权与机器码绑定验证。包含游戏端验证接口、管理后台接口、管理网站与本文档。</p>
+  <p>为 RusherHack 客户端提供账号授权与机器码绑定验证。包含游戏端验证接口、管理后台接口、管理网站与本文档。</p>
   <table>
     <tr><th>环境</th><th>Base URL</th></tr>
     <tr><td>生产</td><td><code>https://yh-team.org</code></td></tr>
@@ -40,7 +40,7 @@
   "username": "玩家用户名",
   "password": "账号密码",
   "machineCode": "本机机器码(SHA-256)",
-  "clientType": "alienv4"
+  "clientType": "rusherhack"
 }</pre>
   <pre>// 响应（通过）
 {
@@ -63,6 +63,9 @@
     <tr><td>POST</td><td>/api/v1/admin/account/renew</td><td>续期</td></tr>
     <tr><td>POST</td><td>/api/v1/admin/account/delete</td><td>删除账号</td></tr>
     <tr><td>POST</td><td>/api/v1/admin/account/resetmachine</td><td>解绑机器码</td></tr>
+    <tr><td>GET</td><td>/api/v1/admin/products</td><td>客户端类型列表</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/product</td><td>添加客户端类型</td></tr>
+    <tr><td>POST</td><td>/api/v1/admin/product/delete</td><td>删除客户端类型</td></tr>
   </table>
 
   <h2>五、curl 示例</h2>
@@ -73,12 +76,12 @@ curl -s -X POST http://localhost:14639/api/v1/admin/login \
 # 添加账号
 curl -s -X POST http://localhost:14639/api/v1/admin/account \
   -H "X-Admin-Token: $ADMIN" -H 'Content-Type: application/json' \
-  -d '{"username":"test","password":"test123","clientType":"alienv4","durationDays":30}'
+  -d '{"username":"test","password":"test123","clientType":"rusherhack","durationDays":30}'
 
 # 游戏端验证
 curl -s -X POST http://localhost:14639/api/v1/auth/verify \
   -H 'Content-Type: application/json' \
-  -d '{"username":"test","password":"test123","machineCode":"ABC123","clientType":"alienv4"}'</pre>
+  -d '{"username":"test","password":"test123","machineCode":"ABC123","clientType":"rusherhack"}'</pre>
 
   <h2>六、管理后台</h2>
   <p>浏览器打开 <a href="/">http://&lt;host&gt;:14639/</a> 即可使用中文后台（登录密码 admin123999）。</p>

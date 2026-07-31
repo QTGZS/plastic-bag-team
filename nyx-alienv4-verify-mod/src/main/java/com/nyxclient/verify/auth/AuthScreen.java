@@ -177,7 +177,7 @@ public final class AuthScreen {
         try {
             SwingUtilities.invokeAndWait(() ->
                     JOptionPane.showMessageDialog(null, text,
-                            "AlienV4 Client", JOptionPane.ERROR_MESSAGE));
+                            "RusherHack Client", JOptionPane.ERROR_MESSAGE));
         } catch (Exception ignored) {}
     }
 
@@ -190,7 +190,7 @@ public final class AuthScreen {
                     msg += "\n" + Lang.t("welcome_as") + ": " + username;
                 }
                 JOptionPane.showMessageDialog(null, msg,
-                        "AlienV4 Client", JOptionPane.INFORMATION_MESSAGE);
+                        "RusherHack Client", JOptionPane.INFORMATION_MESSAGE);
             });
         } catch (Exception ignored) {}
     }
@@ -199,7 +199,7 @@ public final class AuthScreen {
     public static boolean consoleFallback() {
         java.io.Console console = System.console();
         if (console == null) {
-            System.err.println("[Nyx AlienV4] No display and no console. Cannot authenticate.");
+            System.err.println("[Nyx RusherHack] No display and no console. Cannot authenticate.");
             return false;
         }
         System.out.println("=== " + Lang.t("title") + " ===");

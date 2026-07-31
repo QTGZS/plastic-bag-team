@@ -19,6 +19,7 @@ public final class Database {
 
     static {
         data.put("accounts", new ArrayList<Map<String, Object>>());
+        data.put("products", new ArrayList<Map<String, Object>>());
         data.put("adminPasswordHash", Util.sha256("admin123999"));
     }
 
@@ -33,22 +34,40 @@ public final class Database {
                         data.put("accounts", m.get("accounts"));
                     if (m.containsKey("adminPasswordHash"))
                         data.put("adminPasswordHash", m.get("adminPasswordHash"));
+                    if (m.containsKey("products"))
+                        data.put("products", m.get("products"));
+                    else
+                        ensureDefaultProduct();
                 }
-                System.out.println("✓ DB loaded (" + getAccountList().size() + " accounts)");
+                System.out.println("✓ DB loaded (" + getAccountList().size() + " accounts, "
+                        + getProductList().size() + " clients)");
             } catch (Exception e) {
                 System.err.println("! DB load error: " + e.getMessage());
                 save();
             }
         } else {
+            ensureDefaultProduct();
             // 首次启动：随机生成管理员密码，仅打印一次
             String adminPw = generatePassword(12);
             data.put("adminPasswordHash", Util.sha256(adminPw));
-            addAccountInternal("admin", "admin123", "AlienV4", 365);
+            addAccountInternal("admin", "admin123", "RusherHack", 365);
             save();
             System.out.println("========================================");
             System.out.println("  初始管理员密码(随机生成，请妥善保存): " + adminPw);
             System.out.println("  默认测试账号: admin / admin123 (365天)");
             System.out.println("========================================");
+        }
+    }
+
+    /** Make sure there is at least one default client type. */
+    private static void ensureDefaultProduct() {
+        if (getProductList().isEmpty()) {
+            Map<String, Object> p = new LinkedHashMap<>();
+            p.put("id", "RusherHack");
+            p.put("name", "RusherHack");
+            p.put("description", "RusherHack client");
+            p.put("createdAt", Util.now());
+            getProductList().add(p);
         }
     }
 
@@ -99,6 +118,42 @@ public final class Database {
         return null;
     }
 
+    // ── Client types (products) ──
+
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> getProductList() {
+        Object v = data.get("products");
+        if (v instanceof List) return (List<Map<String, Object>>) v;
+        List<Map<String, Object>> list = new ArrayList<>();
+        data.put("products", list);
+        return list;
+    }
+
+    public static Map<String, Object> findProduct(String id) {
+        for (Map<String, Object> p : getProductList()) {
+            if (id != null && id.equals(p.get("id"))) return p;
+        }
+        return null;
+    }
+
+    public static synchronized boolean addProduct(String id, String name, String description) {
+        if (id == null || id.isEmpty() || findProduct(id) != null) return false;
+        Map<String, Object> p = new LinkedHashMap<>();
+        p.put("id", id);
+        p.put("name", name != null && !name.isEmpty() ? name : id);
+        p.put("description", description != null ? description : "");
+        p.put("createdAt", Util.now());
+        getProductList().add(p);
+        save();
+        return true;
+    }
+
+    public static synchronized boolean removeProduct(String id) {
+        boolean removed = getProductList().removeIf(p -> id != null && id.equals(p.get("id")));
+        if (removed) save();
+        return removed;
+    }
+
     // ── Account creation ──
 
     public static synchronized void addAccountInternal(
@@ -106,7 +161,7 @@ public final class Database {
         Map<String, Object> acc = new LinkedHashMap<>();
         acc.put("username", username);
         acc.put("passwordHash", Util.sha256(password));
-        acc.put("clientType", clientType != null ? clientType : "AlienV4");
+        acc.put("clientType", clientType != null ? clientType : "RusherHack");
         acc.put("machineCode", "");
         acc.put("createdAt", Util.now());
         acc.put("expireAt", Util.now() + durationDays * 86400000L);
