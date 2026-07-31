@@ -30,8 +30,8 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
-    // 把 rusherhack.jar 嵌套到输出 jar 的 META-INF/jars/（Fabric JIJ 标准路径）
-    from(files('../rusherhack.jar')) {
+    // 把 alien.jar 嵌套到输出 jar 的 META-INF/jars/（Fabric JIJ 标准路径）
+    from(files('../alien.jar')) {
         into('META-INF/jars')
     }
 }
